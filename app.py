@@ -2,8 +2,13 @@ import streamlit as st
 import requests
 from PIL import Image
 import io
+import uuid  # Dùng để tạo session_id ngẫu nhiên
 
 API_URL = "https://tekup.dongnamduocgl.com/process-image"  # URL API
+
+# Khởi tạo session_id khi mở tab lần đầu
+if "session_id" not in st.session_state:
+    st.session_state["session_id"] = str(uuid.uuid4())
 
 st.set_page_config(page_title="Image Processor", page_icon="🎨", layout="wide")
 st.title("🎨 Image Processing Tool")
@@ -22,15 +27,17 @@ with col1:
         else:
             try:
                 files = {"image": uploaded_image}
-                data = {"text": input_text}
+                data = {
+                    "text": input_text,
+                    "session_id": st.session_state["session_id"]  # Gửi session_id
+                }
 
                 with st.spinner("Đang xử lý..."):
                     response = requests.post(API_URL, files=files, data=data, timeout=300)
 
                 if response.status_code == 200:
-                    # Lưu ảnh kết quả vào session_state để hiển thị bên cột 2
                     st.session_state["result_img"] = response.content
-                    st.success("Xử lý thành công! Xem kết quả bên phải 👉")
+                    st.success(f"Xử lý thành công! (Session: {st.session_state['session_id']}) Xem kết quả bên phải 👉")
                 else:
                     st.error(f"Lỗi: {response.status_code} - {response.text}")
 
@@ -42,7 +49,6 @@ with col2:
     if "result_img" in st.session_state:
         result_img = Image.open(io.BytesIO(st.session_state["result_img"]))
         st.image(result_img, caption="Ảnh kết quả", use_column_width=True)
-        # Nút tải ảnh
         st.download_button(
             label="💾 Tải ảnh kết quả",
             data=st.session_state["result_img"],
