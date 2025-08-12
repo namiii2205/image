@@ -3,7 +3,7 @@ import requests
 from PIL import Image
 import io
 
-API_URL = "http://localhost:9001/process-image"  # URL API
+API_URL = "https://tekup.dongnamduocgl.com/process-image"  # URL API
 
 st.set_page_config(page_title="Image Processor", page_icon="🎨", layout="wide")
 st.title("🎨 Image Processing Tool")
@@ -13,7 +13,7 @@ col1, col2 = st.columns([1, 1])
 
 with col1:
     st.header("📥 Input")
-    uploaded_image = st.file_uploader("Tải ảnh lên:", type=["png", "jpg", "jpeg"])
+    uploaded_image = st.file_uploader("Tải ảnh lên (vui lòng chỉ upload ảnh vuông):", type=["png", "jpg", "jpeg"])
     input_text = st.text_area("Nhập mô tả (text prompt):", "")
 
     if st.button("🚀 Xử lý ảnh"):
