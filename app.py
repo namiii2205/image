@@ -3,7 +3,7 @@ import requests
 from PIL import Image
 import io
 
-API_URL = "https://tekup.dongnamduocgl.com/process-image"  # URL API
+API_URL = "http://tekup.dongnamduocgl.com/process-image"  # URL API
 
 st.set_page_config(page_title="Image Processor", page_icon="🎨", layout="wide")
 st.title("🎨 Image Processing Tool")
