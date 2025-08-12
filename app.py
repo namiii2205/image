@@ -13,7 +13,7 @@ col1, col2 = st.columns([1, 1])
 
 with col1:
     st.header("📥 Input")
-    uploaded_image = st.file_uploader("Tải ảnh lên (vui lòng chỉ upload ảnh vuông):", type=["png", "jpg", "jpeg"])
+    uploaded_image = st.file_uploader("Tải ảnh lên:", type=["png", "jpg", "jpeg"])
     input_text = st.text_area("Nhập mô tả (text prompt):", "")
 
     if st.button("🚀 Xử lý ảnh"):
@@ -25,7 +25,7 @@ with col1:
                 data = {"text": input_text}
 
                 with st.spinner("Đang xử lý..."):
-                    response = requests.post(API_URL, files=files, data=data)
+                    response = requests.post(API_URL, files=files, data=data, timeout=300)
 
                 if response.status_code == 200:
                     # Lưu ảnh kết quả vào session_state để hiển thị bên cột 2
