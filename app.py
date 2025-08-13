@@ -19,14 +19,17 @@ col1, col2 = st.columns([1, 1])
 
 with col1:
     st.header("📥 Input")
-    uploaded_image = st.file_uploader("Tải ảnh chính:", type=["png", "jpg", "jpeg"])
-    ref_image = st.file_uploader("Tải ref_image (tùy chọn):", type=["png", "jpg", "jpeg"])
-    input_text = st.text_area("Nhập mô tả (text prompt):", "")
-    no_images = st.number_input("Số ảnh muốn tạo (1-10):", min_value=1, max_value=10, value=1, step=1)
+    col3, col4 = st.columns([1, 1])
+    with col3:
+        uploaded_image = st.file_uploader("Upload main image:", type=["png", "jpg", "jpeg"])
+    with col4:
+        ref_image = st.file_uploader("Upload reference image (optional):", type=["png", "jpg", "jpeg"])
+    input_text = st.text_area("Input text prompt:", "")
+    no_images = st.number_input("Number of generated results (1-10):", min_value=1, max_value=10, value=1, step=1)
 
     if st.button("🚀 Xử lý ảnh"):
         if uploaded_image is None or not input_text.strip():
-            st.error("Vui lòng tải ảnh chính và nhập text trước khi xử lý.")
+            st.error("Please upload main image and enter text prompt.")
         else:
             try:
                 files = {
@@ -41,7 +44,7 @@ with col1:
                     "no_images": str(no_images)
                 }
 
-                with st.spinner("Đang xử lý..."):
+                with st.spinner("Processing ..."):
                     response = requests.post(API_URL, files=files, data=data, timeout=300)
 
                 if response.status_code == 200:
@@ -51,9 +54,9 @@ with col1:
                         for idx, img_b64 in enumerate(resp_json["images"], start=1):
                             img_bytes = base64.b64decode(img_b64)
                             st.session_state["result_imgs"].append((f"result_{idx}.png", img_bytes))
-                        st.success(f"Xử lý thành công! (Session: {st.session_state['session_id']}) Xem kết quả bên phải 👉")
+                        st.success(f"Success! (Session: {st.session_state['session_id']}) Xem kết quả bên phải 👉")
                     else:
-                        st.error("Phản hồi từ API không chứa trường 'images'.")
+                        pass
                 else:
                     st.error(f"Lỗi: {response.status_code} - {response.text}")
 
@@ -67,7 +70,7 @@ with col2:
             img = Image.open(io.BytesIO(img_bytes))
             st.image(img, caption=file_name, use_column_width=True)
             st.download_button(
-                label=f"💾 Tải {file_name}",
+                label=f"💾 Download {file_name}",
                 data=img_bytes,
                 file_name=file_name,
                 mime="image/png"
