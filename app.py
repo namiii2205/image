@@ -67,7 +67,7 @@ with col2:
     if "result_imgs" in st.session_state and st.session_state["result_imgs"]:
         file_name, img_bytes = st.session_state["result_imgs"][st.session_state["img_index"]]
         img = Image.open(io.BytesIO(img_bytes))
-        st.image(img, caption=f"{file_name} ({st.session_state['img_index']+1}/{len(st.session_state['result_imgs'])})", use_column_width=True)
+        st.image(img, caption=f"{file_name} ({st.session_state['img_index']+1}/{len(st.session_state['result_imgs'])})", use_container_width=True)
 
         col_prev, col_next = st.columns([1, 1])
         with col_prev:
